@@ -12,6 +12,7 @@ const path = require('path');
  * internal imports
  */
 const authRouter = require('./routes/authRouter');
+const conversationRouter = require('./routes/conversationRouter');
 
 /**
  * express app
@@ -70,6 +71,11 @@ app.use(express.static(path.join(__dirname, "public")));
  * auth router
  */
 app.use("/", authRouter);
+
+/**
+ * conversation router
+ */
+app.use('/conversation', conversationRouter);
 
 /**
  * server start
