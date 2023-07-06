@@ -58,6 +58,10 @@ const addConversation = async (req, res) => {
 
         const result = await conversation.save();
 
+        global.importScripts.emit("conversation", {
+            data: result
+        });
+
         res.status(201).json(result);
     } catch (error) {
         res.status(500).json({
@@ -77,6 +81,11 @@ const editConversation = async (req, res) => {
     if (id) {
         try {
             const conversation = await Conversation.updateOne({ _id: id }, { ...req.body });
+
+            global.io.emit("conversation", {
+                data: conversation
+            })
+
             res.status(200).json(conversation);
         } catch (error) {
             res.status(500).json({

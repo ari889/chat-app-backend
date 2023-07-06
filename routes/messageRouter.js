@@ -18,7 +18,7 @@ const router = express.Router();
 /**
  * get add message
  */
-router.get('/', checkLogin, getMessageController);
+router.get('/:id', checkLogin, getMessageController);
 
 /**
  * add new message

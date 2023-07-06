@@ -7,11 +7,14 @@ const Message = require('../models/Message');
  * get all message
  */
 const getMessageController = async (req, res) => {
-    const { conversationId, start, limit } = req.query;
+    const { start, limit } = req.query;
+    const conversationId = req.params.id;
 
 
     try {
-        const query = Message.find();
+        const query = Message.find({
+            sender: req.user._id
+        });
 
         if (conversationId) {
             query.find({ conversationId: conversationId });
@@ -47,6 +50,10 @@ const addMessageController = async (req, res) => {
         })
 
         const result = await message.save();
+
+        global.io.emit("message", {
+            data: result
+        });
 
         res.status(201).json(result);
     } catch (error) {

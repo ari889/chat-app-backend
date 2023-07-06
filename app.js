@@ -14,6 +14,7 @@ const path = require('path');
 const authRouter = require('./routes/authRouter');
 const conversationRouter = require('./routes/conversationRouter');
 const messageRouter = require('./routes/messageRouter');
+const { notFoundHandler, commonErrorHandler } = require('./middlewares/common/errorHandler');
 
 /**
  * express app
@@ -24,6 +25,16 @@ const app = express();
  * http server
  */
 const server = http.createServer(app);
+
+/**
+ * socket creation
+ */
+const io = require('socket.io')(server)
+
+/**
+ * apply socket globally
+ */
+global.io = io;
 
 /**
  * dot env config
@@ -82,6 +93,16 @@ app.use('/conversation', conversationRouter);
  * message router
  */
 app.use('/message', messageRouter);
+
+/**
+ * 404 not found
+ */
+app.use(notFoundHandler);
+
+/**
+ * common error handler
+ */
+app.use(commonErrorHandler);
 
 /**
  * server start
