@@ -13,6 +13,7 @@ const path = require('path');
  */
 const authRouter = require('./routes/authRouter');
 const conversationRouter = require('./routes/conversationRouter');
+const messageRouter = require('./routes/messageRouter');
 
 /**
  * express app
@@ -76,6 +77,11 @@ app.use("/", authRouter);
  * conversation router
  */
 app.use('/conversation', conversationRouter);
+
+/**
+ * message router
+ */
+app.use('/message', messageRouter);
 
 /**
  * server start

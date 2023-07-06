@@ -4,11 +4,6 @@
 const { check, validationResult } = require('express-validator');
 
 /**
- * internal imports
- */
-const User = require('../../models/User');
-
-/**
  * add user validator
  */
 const editConversationValidators = [

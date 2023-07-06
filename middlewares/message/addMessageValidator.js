@@ -6,16 +6,12 @@ const { check, validationResult } = require('express-validator');
 /**
  * add user validator
  */
-const addConversationValidators = [
-    check("participants")
-        .notEmpty()
-        .withMessage("Participant required!")
+const addMessageValidators = [
+    check("conversationId")
+        .isMongoId()
+        .withMessage("Invalid conversation ID!")
         .trim(),
-    check("users")
-        .isArray({ min: 2, max: 2 })
-        .withMessage("The users array must contain exactly 2 user IDs.!")
-        .trim(),
-    check("message")
+    check("receiver")
         .notEmpty()
         .withMessage("Message required!")
         .trim(),
@@ -28,7 +24,7 @@ const addConversationValidators = [
 /**
  * mapped validation error
  */
-const addConversationValidationHandler = function (req, res, next) {
+const addMessageValidationHandler = function (req, res, next) {
     const errors = validationResult(req);
     const mappedErrors = errors.mapped();
 
@@ -43,6 +39,6 @@ const addConversationValidationHandler = function (req, res, next) {
 }
 
 module.exports = {
-    addConversationValidators,
-    addConversationValidationHandler
+    addMessageValidators,
+    addMessageValidationHandler
 }

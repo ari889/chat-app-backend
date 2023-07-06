@@ -11,16 +11,6 @@ const getConversationController = async (req, res) => {
 
 
     try {
-        // const conversations = await Conversation.find({
-        //     $or: [
-        //         { participants: `${participants}-${req.user.email}` },
-        //         { participants: `${req.user.email}-${participants}` }
-        //     ]
-        // })
-        //     .populate('users', 'email name _id')
-        //     .skip(start)
-        //     .limit(limit)
-        //     .sort({ timestamp: -1 });
         const query = Conversation.find();
 
         if (participants) {
@@ -46,15 +36,6 @@ const getConversationController = async (req, res) => {
         }
 
         const conversations = await query.populate('users', 'email name _id').sort({ timestamp: -1 });
-        // const conversations = await Conversation.find({
-        //     participants: { $regex: `\\b${participants}\\b`, $options: "i" }
-        // })
-        //     .populate('users', 'email name _id')
-        //     .skip(start)
-        //     .limit(limit)
-        //     .sort({ timestamp: -1 });
-
-        // res.status(200).json(conversations);
         res.status(200).json(conversations);
     } catch (error) {
         console.log(Error)
