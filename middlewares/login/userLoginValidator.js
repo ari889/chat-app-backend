@@ -14,13 +14,13 @@ const User = require('../../models/User');
  */
 const userLoginValidators = [
     check("email")
-        .exists()
+        .notEmpty()
         .withMessage("Email required!")
         .isEmail()
         .withMessage("Invalid email address!")
         .trim(),
     check("password")
-        .exists()
+        .notEmpty()
         .withMessage("Password required!")
 ];
 

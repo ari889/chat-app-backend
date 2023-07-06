@@ -7,6 +7,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const moment = require('moment/moment');
 const path = require('path');
+const cors = require('cors');
 
 /**
  * internal imports
@@ -45,6 +46,17 @@ dotenv.config();
  * add moment globally
  */
 app.locals.moment = moment;
+
+/**
+ * apply cors
+ */
+const corsOptions = {
+    origin: process.env.CLIENT_HOST, // Set the allowed origin(s)
+    methods: ['GET', 'POST', "PATCH"],     // Set the allowed HTTP methods
+    allowedHeaders: ['Content-Type'], // Set the allowed headers
+    credentials: true             // Enable CORS credentials
+};
+app.use(cors(corsOptions));
 
 /**
  * connect mongoose
