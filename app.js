@@ -15,6 +15,7 @@ const cors = require('cors');
 const authRouter = require('./routes/authRouter');
 const conversationRouter = require('./routes/conversationRouter');
 const messageRouter = require('./routes/messageRouter');
+const userRouter = require('./routes/userRouter');
 const { notFoundHandler, commonErrorHandler } = require('./middlewares/common/errorHandler');
 
 /**
@@ -53,7 +54,7 @@ app.locals.moment = moment;
 const corsOptions = {
     origin: process.env.CLIENT_HOST, // Set the allowed origin(s)
     methods: ['GET', 'POST', "PATCH"],     // Set the allowed HTTP methods
-    allowedHeaders: ['Content-Type'], // Set the allowed headers
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Total-Count'], // Set the allowed headers
     credentials: true             // Enable CORS credentials
 };
 app.use(cors(corsOptions));
@@ -99,12 +100,17 @@ app.use("/", authRouter);
 /**
  * conversation router
  */
-app.use('/conversation', conversationRouter);
+app.use('/conversations', conversationRouter);
 
 /**
  * message router
  */
-app.use('/message', messageRouter);
+app.use('/messages', messageRouter);
+
+/**
+ * user router
+ */
+app.use('/users', userRouter);
 
 /**
  * 404 not found

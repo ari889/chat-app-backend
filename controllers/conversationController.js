@@ -2,6 +2,7 @@
  * internal imports
  */
 const Conversation = require('../models/Conversation');
+const { findById } = require('../models/Message');
 
 /**
  * get all conversations
@@ -36,7 +37,10 @@ const getConversationController = async (req, res) => {
         }
 
         const conversations = await query.populate('users', 'email name _id').sort({ timestamp: -1 });
-        res.status(200).json(conversations);
+
+        const count = await Conversation.countDocuments();
+
+        res.status(200).json({ conversations, totalCount: count });
     } catch (error) {
         console.log(Error)
         res.status(500).json({
@@ -57,8 +61,9 @@ const addConversation = async (req, res) => {
         })
 
         const result = await conversation.save();
+        await Conversation.populate(result, { path: 'users', select: "_id email name" });
 
-        global.importScripts.emit("conversation", {
+        global.io.emit("conversation", {
             data: result
         });
 
@@ -80,13 +85,15 @@ const editConversation = async (req, res) => {
 
     if (id) {
         try {
-            const conversation = await Conversation.updateOne({ _id: id }, { ...req.body });
+            await Conversation.updateOne({ _id: id }, { ...req.body });
+
+            const result = await Conversation.findById(id).populate('users', '_id email name');
 
             global.io.emit("conversation", {
-                data: conversation
+                data: result
             })
 
-            res.status(200).json(conversation);
+            res.status(200).json(result);
         } catch (error) {
             res.status(500).json({
                 errors: {
