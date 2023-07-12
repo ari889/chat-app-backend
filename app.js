@@ -31,7 +31,11 @@ const server = http.createServer(app);
 /**
  * socket creation
  */
-const io = require('socket.io')(server)
+const io = require('socket.io')(server, {
+    cors: {
+        origin: process.env.CLIENT_HOST
+    }
+})
 
 /**
  * apply socket globally
