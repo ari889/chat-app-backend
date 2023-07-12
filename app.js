@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const moment = require('moment/moment');
 const path = require('path');
 const cors = require('cors');
+const { Server } = require('socket.io');
 
 /**
  * internal imports
@@ -29,23 +30,32 @@ const app = express();
 const server = http.createServer(app);
 
 /**
+ * dot env config
+ */
+dotenv.config();
+
+/**
  * socket creation
  */
-const io = require('socket.io')(server, {
+const io = new Server(server, {
     cors: {
-        origin: process.env.CLIENT_HOST
+        origin: process.env.CLIENT_HOST,
+        methods: ["GET", "POST"]
     }
+});
+
+io.on("connection", (socket) => {
+    console.log(`User connected ${socket.id}`);
+
+    socket.on("disconnect", () => {
+        console.log("User disconnected" + socket.id);
+    })
 })
 
 /**
  * apply socket globally
  */
 global.io = io;
-
-/**
- * dot env config
- */
-dotenv.config();
 
 /**
  * add moment globally
