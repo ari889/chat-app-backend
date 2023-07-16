@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const moment = require('moment/moment');
 const path = require('path');
 const cors = require('cors');
-const { Server } = require('socket.io');
+const socketIO = require('socket.io');
 
 /**
  * internal imports
@@ -35,13 +35,21 @@ const server = http.createServer(app);
 dotenv.config();
 
 /**
+ * apply cors
+ */
+const corsOptions = {
+    origin: process.env.CLIENT_HOST, // Set the allowed origin(s)
+    methods: ['GET', 'POST', "PATCH"],     // Set the allowed HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Set the allowed headers
+    credentials: true             // Enable CORS credentials
+};
+app.use(cors(corsOptions));
+
+/**
  * socket creation
  */
-const io = new Server(server, {
-    cors: {
-        origin: process.env.CLIENT_HOST,
-        methods: ["GET", "POST"]
-    }
+const io = socketIO(server, {
+    cors: corsOptions
 });
 
 io.on("connection", (socket) => {
@@ -61,17 +69,6 @@ global.io = io;
  * add moment globally
  */
 app.locals.moment = moment;
-
-/**
- * apply cors
- */
-const corsOptions = {
-    origin: process.env.CLIENT_HOST, // Set the allowed origin(s)
-    methods: ['GET', 'POST', "PATCH"],     // Set the allowed HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Total-Count'], // Set the allowed headers
-    credentials: true             // Enable CORS credentials
-};
-app.use(cors(corsOptions));
 
 /**
  * connect mongoose
