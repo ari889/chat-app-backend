@@ -2,13 +2,19 @@
  * external imports
  */
 const express = require('express');
-const http = require('http');
+const https = require('https');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const moment = require('moment/moment');
 const path = require('path');
 const cors = require('cors');
 const socketIO = require('socket.io');
+const fs = require('fs');
+
+var options = {
+    key: fs.readFileSync('/home/crazyfas/ssl/key.pem'),
+    cert: fs.readFileSync('/home/crazyfas/ssl/crt.pem')
+};
 
 /**
  * internal imports
@@ -27,7 +33,7 @@ const app = express();
 /**
  * http server
  */
-const server = http.createServer(app);
+const server = https.createServer(options, app);
 
 /**
  * dot env config
@@ -78,7 +84,7 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING, {
     useUnifiedTopology: true
 })
     .then(() => console.log("Database connection successful!"))
-    .catch(err => console.log(err))
+    .catch(err => console.log(err.message))
 
 /**
  * root route
